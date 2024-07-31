@@ -11,22 +11,14 @@ import threading
 import time
 import logging
 import eventlet
-
-# Monkey patching for better performance with eventlet
 eventlet.monkey_patch()
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet')
-
-# Configure Celery with Redis
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
-
-# Configure SQLAlchemy with SQLite
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///argus.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
+
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
