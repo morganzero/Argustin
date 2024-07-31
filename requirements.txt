@@ -1,0 +1,8 @@
+flask
+flask-socketio
+celery
+redis
+paramiko
+plexapi
+retrying
+flask-sqlalchemy
