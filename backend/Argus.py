@@ -10,9 +10,13 @@ from retrying import retry
 import threading
 import time
 import logging
+import eventlet
+
+# Monkey patching for better performance with eventlet
+eventlet.monkey_patch()
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 # Configure Celery with Redis
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
@@ -186,4 +190,4 @@ def index():
 
 if __name__ == "__main__":
     fetch_plex_servers.delay()  # Fetch servers as a background task on startup
-    socketio.run(app, host='0.0.0.0', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
