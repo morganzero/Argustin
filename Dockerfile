@@ -43,4 +43,5 @@ ENV PATH="/app/venv/bin:$PATH"
 EXPOSE 5000 6379 80
 
 # Start Redis, Nginx, and Flask
-CMD ["sh", "-c", "redis-server & nginx && python /app/Argus.py"]
+CMD ["sh", "-c", "redis-server /usr/local/etc/redis/redis.conf & nginx && python /app/Argus.py"]
+
