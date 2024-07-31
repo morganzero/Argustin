@@ -1,3 +1,5 @@
+# Use a multi-stage build process
+
 # Stage 1: Build React app
 FROM node:18-alpine as build
 
@@ -15,15 +17,18 @@ RUN npm run build
 FROM ghcr.io/linuxserver/baseimage-alpine:3.20-d6fdb4e3-ls8
 
 # Install Python, OpenSSH, Nginx, and Redis
-RUN apk add --no-cache python3 py3-pip openssh redis nginx && \
-    python3 -m venv /app/venv && \
-    /app/venv/bin/pip install --no-cache-dir -r /app/requirements.txt
+RUN apk add --no-cache python3 py3-pip openssh redis nginx
 
 # Set up working directory
 WORKDIR /app
 
-# Copy the Flask application
+# Copy the backend application
 COPY backend/ ./
+
+# Copy the requirements.txt file and install Python dependencies
+COPY backend/requirements.txt /app/requirements.txt
+RUN python3 -m venv /app/venv && \
+    /app/venv/bin/pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy the React build from the previous stage
 COPY --from=build /app/build /usr/share/nginx/html
