@@ -1,4 +1,3 @@
-# Use a multi-stage build process
 # Stage 1: Build React app
 FROM node:18-alpine as build
 
